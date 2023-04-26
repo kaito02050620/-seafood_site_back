@@ -9,9 +9,11 @@ const path = require("path");
 const cors = require("cors");
 const app = express();
 
+app.use(bodyParser.json());
 app.use(
   cors({
     origin: "https://seafoodcook.netlify.app",
+    // origin: "http://localhost:5173",
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
@@ -33,7 +35,6 @@ mongoose
   });
 
 app.use("/images", express.static(path.join(__dirname, "public/images")));
-app.use(bodyParser.json());
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/auth", authRoutes);

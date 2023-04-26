@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const User = require("../models/User");
 const Post = require("../models/Post");
-const bcrypt = require("bcrypt");
 
 //ユーザー削除
 router.delete("/:id", async (req, res) => {

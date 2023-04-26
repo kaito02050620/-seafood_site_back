@@ -1,20 +1,32 @@
 const router = require("express").Router();
 const multer = require("multer");
+const multerS3 = require("multer-s3");
+const AWS = require("aws-sdk");
 const path = require("path");
+require("dotenv").config();
 
-//ファイルの保存先、一意なファイル名に変更
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "public/images");
-  },
-  filename: (req, file, cb) => {
-    cb(null, req.body.name);
-  },
+AWS.config.update({
+  accessKeyId: process.env.aws_access_key_id,
+  secretAccessKey: process.env.aws_secret_access_key,
+  region: process.env.aws_region,
 });
+
+//aws使用設定
+const s3 = new AWS.S3();
 
 //ファイルバリデーションのミドルウェア
 const upload = multer({
-  storage: storage,
+  storage: multerS3({
+    s3: s3,
+    bucket: process.env.aws_bucket,
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString());
+    },
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+  }),
   limits: { fileSize: 1024 * 1024 * 10 },
   fileFilter: (req, file, cb) => {
     const fileTypes = /jpeg|jpg|png|gif/;
@@ -30,7 +42,6 @@ const upload = multer({
     }
   },
 }).single("file");
-
 //画像をアップロード
 router.post("/", upload, (req, res) => {
   try {
