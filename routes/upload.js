@@ -23,7 +23,12 @@ const upload = multer({
       cb(null, { fieldName: file.fieldname });
     },
     key: function (req, file, cb) {
-      cb(null, Date.now().toString());
+      cb(
+        null,
+        `${
+          new Date().getMonth().toString() + new Date().getDate().toString()
+        }-${file.originalname}`
+      );
     },
     contentType: multerS3.AUTO_CONTENT_TYPE,
   }),
@@ -42,6 +47,7 @@ const upload = multer({
     }
   },
 }).single("file");
+
 //画像をアップロード
 router.post("/", upload, (req, res) => {
   try {
