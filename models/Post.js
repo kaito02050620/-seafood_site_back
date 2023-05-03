@@ -22,6 +22,11 @@ const PostSchema = new mongoose.Schema(
       required: true,
       default: 1,
     },
+    likes: {
+      type: Array,
+      required: false,
+      default: [],
+    },
     seafoods: {
       type: [
         {

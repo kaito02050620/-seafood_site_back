@@ -80,4 +80,25 @@ router.get("/private/:id", async (req, res) => {
   }
 });
 
+//投稿したレシピに良いね!
+router.put("/:id/likes", async (req, res) => {
+  try {
+    const recipe = await Post.findById(req.params.id);
+    const recipeLikes = recipe.likes;
+    const currentUserId = req.body.userId;
+    const isLike = recipeLikes.includes(currentUserId);
+    if (!isLike) {
+      recipeLikes.push(currentUserId);
+      res.status(200).json(recipe);
+    } else {
+      const newLikes = recipeLikes.filter((userId) => userId !== currentUserId);
+      recipe.likes = newLikes;
+      res.status(200).json(recipe);
+    }
+    await recipe.save();
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
 module.exports = router;
