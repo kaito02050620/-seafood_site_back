@@ -12,6 +12,23 @@ router.post("/", async (req, res) => {
   }
 });
 
+//全てのレシピからいいね数が多い上位３位までを取得
+router.get("/ranking", async (req, res) => {
+  try {
+    const recipes = await Post.find();
+    const sortRecipe = recipes.sort(function (a, b) {
+      return a.likes.length > b.likes.length ? -1 : 1;
+    });
+    const rankingRecipe = [];
+    for (let i = 0; i < 3; i++) {
+      rankingRecipe.push(sortRecipe[i]);
+    }
+    return res.status(200).json(rankingRecipe);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
 //レシピを全て取得
 router.get("/allRecipe", async (req, res) => {
   try {

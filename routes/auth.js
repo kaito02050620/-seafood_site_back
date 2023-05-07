@@ -23,11 +23,13 @@ router.post("/login", async (req, res) => {
   try {
     //ユーザー照合
     const user = await User.findOne({ email: req.body.email });
-    if (!user) return res.status(400).json("ユーザーが見つかりません");
+    if (user) {
+      const compared = await bcrypt.compare(req.body.password, user.password);
+      if (!compared) return res.status(400).json("パスワードが間違っています");
+    } else {
+      return res.status(400).json("ユーザーが見つかりません");
+    }
 
-    //パスワード照合
-    const compared = await bcrypt.compare(req.body.password, user.password);
-    if (!compared) return res.status(400).json("パスワードが一致しません");
     return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json(error);
