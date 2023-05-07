@@ -12,7 +12,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: "https://seafoodcook.netlify.app/",
+    origin: "https://seafoodcook.netlify.app",
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
