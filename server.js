@@ -10,13 +10,13 @@ const cors = require("cors");
 const app = express();
 
 app.use(bodyParser.json());
-// app.use(
-//   cors({
-//     origin: "https://seafoodcook.netlify.app",
-//     methods: ["GET", "POST", "DELETE", "PUT"],
-//     credentials: true,
-//   })
-// );
+app.use(
+  cors({
+    origin: "https://seafoodcook.netlify.app",
+    methods: ["GET", "POST", "DELETE", "PUT"],
+    credentials: true,
+  })
+);
 
 //環境変数
 require("dotenv").config();
