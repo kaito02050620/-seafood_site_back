@@ -118,4 +118,27 @@ router.put("/:id/likes", async (req, res) => {
   }
 });
 
+//投稿したレシピお気に入り保存
+router.put("/:id/favorites", async (req, res) => {
+  try {
+    const recipe = await Post.findById(req.params.id);
+    const recipeFavorites = recipe.favorites;
+    const currentUserId = req.body.userId;
+    const isFavorite = recipeFavorites.includes(currentUserId);
+    if (!isFavorite) {
+      recipeFavorites.push(currentUserId);
+      res.status(200).json(recipe);
+    } else {
+      const newFavorites = recipeFavorites.filter(
+        (userId) => userId !== currentUserId
+      );
+      recipe.favorites = newFavorites;
+      res.status(200).json();
+    }
+    await recipe.save(recipe);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
 module.exports = router;
